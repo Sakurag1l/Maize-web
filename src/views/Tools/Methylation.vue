@@ -16,6 +16,7 @@
           ntroductions
         </h3>
       </div>
+
       <div style="margin-top: 50px; height: 330px; text-align: center">
         <a-row>
           <a-col :span="12">
@@ -79,6 +80,14 @@
                   </a-upload>
                 </a-col>
               </a-row>
+              <a-row>
+                <a-col :span="6">
+                  <h1 style="float: left; margin-left: 40%">E-mail:</h1>
+                </a-col>
+                <a-col :span="12">
+                  <a-input v-model="email" type="email" />
+                </a-col>
+              </a-row>
               <a-button
                 style="margin-top: 6px"
                 type="primary"
@@ -93,7 +102,6 @@
       </div>
     </div>
     <div style="width: 80%; margin-left: 12%">
-      <h1>{{ `Prediction:  ${preresult}` }}</h1>
       <h1>Heatmap:</h1>
     </div>
     <div id="imgId" @click="openimg" class="showimg">
@@ -122,6 +130,7 @@ export default {
       preresult: "",
       fileList: [],
       isDisabled: false,
+      email: "",
     };
   },
   methods: {
@@ -143,13 +152,31 @@ export default {
       console.log(this.fileList);
     },
     submitseqs() {
+      let strArr = [];
+      let str = "";
+      for (var i = 1; i < this.InputSeqs.length; i++) {
+        //遍历字符串，枚举每个字符
+        if (this.InputSeqs[i] != ">") {
+          if (this.InputSeqs[i] != "\n") str += this.InputSeqs[i];
+        } else {
+          strArr.push(str);
+          str = "";
+        }
+      }
+      strArr.push(str);
+      // console.log(strArr);
       let file = new FormData();
       file.append("file", this.fileList[0]);
-      let uploaddata = {};
+      let uploaddata = {
+        seqs: strArr,
+        modelName: this.methltype,
+        email: this.email,
+      };
       console.log(file);
-      uploadfile(data, file).then((res) => {
-        console.log(res);
-      });
+      console.log(this.fileList[0]);
+      // uploadfile(data, file).then((res) => {
+      //   console.log(res);
+      // });
     },
     openimg() {
       this.isShowImg = !this.isShowImg;
