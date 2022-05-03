@@ -21,3 +21,16 @@ export function getResult(taskID) {
         url: `/model/result?taskID=${taskID}`,
     })
 }
+
+export function uploadfile(data, file) {
+    return request({
+        method: 'post',
+        url: `model/file`,
+        headers: {
+            "Content-Type": "form-data",
+        },
+        params: data,
+        data: file
+    })
+}
+

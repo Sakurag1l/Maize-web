@@ -7,7 +7,7 @@
     <div class="tool-up">
       <div class="top-text">
         <h1 style="font-size: 35px">
-          aaMaize DNA methylation level prediction and analysis
+          Maize DNA methylation level prediction and analysis
         </h1>
         <h3>
           Introductions ntroductions ntroductions ntroductions
@@ -67,14 +67,14 @@
                 </a-col>
                 <a-col :span="6">
                   <a-upload
-                    :v-model:file-list="fileList"
-                    :max-count="1"
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    :beforeUpload="handleChange"
+                    :file-list="fileList"
+                    :disabled="isDisabled"
+                    :before-upload="handleChange"
                     @change="changestatue"
                   >
                     <a-button>
-                      <a-icon type="upload" />Click to Upload
+                      <a-icon :disabled="isDisabled" type="upload" />Click to
+                      Upload
                     </a-button>
                   </a-upload>
                 </a-col>
@@ -83,10 +83,9 @@
                 style="margin-top: 6px"
                 type="primary"
                 block
-                :disabled="loading"
                 @click="submitseqs"
               >
-                Submit
+                {{ uploading ? "Uploading" : "Start Upload" }}
               </a-button>
             </div>
           </a-col>
@@ -105,8 +104,7 @@
 </template>
 
 <script>
-import { ModelPre, getResult } from "../../request/api.js";
-// import { UploadOutlined } from "@ant-design/icons-vue";
+import { ModelPre, getResult, uploadfile } from "../../request/api.js";
 
 export default {
   name: "Methylation",
@@ -118,10 +116,12 @@ export default {
       typelist: ["CHH", "CHG", "CG"],
       InputSeqs: "",
       loading: true,
+      uploading: false,
       methltype: "CHG",
       isShowImg: false,
       preresult: "",
       fileList: [],
+      isDisabled: false,
     };
   },
   methods: {
@@ -129,27 +129,26 @@ export default {
       this.loading = false;
     },
     handleChange(file) {
-      console.log(file);
+      file;
+      // console.log(file);
       return false;
     },
-    changestatue() {
+    changestatue(info) {
+      let fileList = [...info.fileList];
+
+      // 1. Limit the number of uploaded files
+      //    Only to show two recent uploaded files, and old ones will be replaced by the new
+      fileList = fileList.slice(-1);
+      this.fileList = fileList;
       console.log(this.fileList);
     },
     submitseqs() {
-      let modeldata = {
-        seq: "ACCCCC",
-        modelName: "test",
-      };
-
-      ModelPre(modeldata).then((res) => {
-        console.log(res.data);
-        setTimeout(() => {
-          let taskID = "1907_1649343922600";
-          getResult(taskID).then((res) => {
-            this.preresult = res.data.result;
-            console.log(res);
-          });
-        }, 2 * 1000);
+      let file = new FormData();
+      file.append("file", this.fileList[0]);
+      let uploaddata = {};
+      console.log(file);
+      uploadfile(data, file).then((res) => {
+        console.log(res);
       });
     },
     openimg() {
