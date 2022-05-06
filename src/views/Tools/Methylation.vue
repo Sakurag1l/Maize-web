@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import { ModelPre, getResult, uploadfile } from "../../request/api.js";
+import { getResult, uploadfile, uploadseq } from "../../request/api.js";
 
 export default {
   name: "Methylation",
@@ -121,11 +121,18 @@ export default {
   data() {
     return {
       list1: [],
-      typelist: ["CHH", "CHG", "CG"],
-      InputSeqs: "",
+      typelist: [
+        "NCNR_CG",
+        "NCNR_CHG",
+        "TE_CG",
+        "TE_CHG",
+        "CODE_CG",
+        "CODE_CHG",
+      ],
+      InputSeqs: ">",
       loading: true,
       uploading: false,
-      methltype: "CHG",
+      methltype: "NCNR_CG",
       isShowImg: false,
       preresult: "",
       fileList: [],
@@ -165,16 +172,23 @@ export default {
       }
       strArr.push(str);
       // console.log(strArr);
-      let file = new FormData();
-      file.append("file", this.fileList[0]);
-      let uploaddata = {
-        seqs: strArr,
-        modelName: this.methltype,
-        email: this.email,
+      let dataForm = new FormData();
+      dataForm.append("file", this.fileList[0]);
+      dataForm.append("seq", strArr);
+      dataForm.append("email", this.email);
+      dataForm.append("modelName", "NCNR_CG_DP");
+
+      let seqdata = {
+        email: "344501734@qq.com",
+        modelName: "NCNR_CG_DP",
+        seq: strArr,
       };
-      console.log(file);
-      console.log(this.fileList[0]);
-      // uploadfile(data, file).then((res) => {
+
+      console.log(seqdata);
+      uploadseq(seqdata).then((res) => {
+        console.log(res);
+      });
+      // uploadfile(dataForm).then((res) => {
       //   console.log(res);
       // });
     },
@@ -182,7 +196,7 @@ export default {
       this.isShowImg = !this.isShowImg;
       if (this.isShowImg) {
         let temp = document.getElementById("imgId");
-        console.log(temp.childNodes);
+        // console.log(temp.childNodes);
         temp.childNodes[0].style.width = "160%";
         temp.childNodes[0].style.height = "340px";
         temp.childNodes[1].style.width = "160%";
@@ -190,7 +204,7 @@ export default {
         temp.setAttribute("class", "isopenimg");
       } else {
         let temp = document.getElementById("imgId");
-        console.log(temp.childNodes);
+        // console.log(temp.childNodes);
         temp.childNodes[0].style.width = "100%";
         temp.childNodes[0].style.height = "280px";
         temp.childNodes[1].style.width = "100%";

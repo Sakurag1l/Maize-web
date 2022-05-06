@@ -22,15 +22,27 @@ export function getResult(taskID) {
     })
 }
 
-export function uploadfile(data, file) {
+export function uploadfile(data) {
     return request({
         method: 'post',
-        url: `model/file`,
+        url: `/model/file`,
         headers: {
             "Content-Type": "form-data",
         },
-        params: data,
-        data: file
+        data
+    })
+}
+
+//上传序列
+export function uploadseq(data) {
+    console.log(data);
+    return request({
+        method: 'post',
+        url: `/model/submit`,
+        headers: {
+            "Content-Type": "application/json"
+        },
+        data
     })
 }
 

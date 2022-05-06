@@ -5,6 +5,7 @@
 import axios from 'axios'
 
 export default function request(config) {
+    console.log(config);
     const instance = axios.create({
         baseURL: "http://124.220.197.196"
     })

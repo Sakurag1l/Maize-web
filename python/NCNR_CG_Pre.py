@@ -127,6 +127,6 @@ else:
     dataframe = pd.DataFrame(dicts)
     dataframe.to_csv('00_NCNR_CG_Prediction.csv')
 
-    simple_upload('%s.suffix'%taskID,"00_NCNR_CG_Prediction.csv")
+    simple_upload('00_NCNR_CG_Prediction%s.suffix'%taskID,"00_NCNR_CG_Prediction.csv")
 
     os.remove("00_NCNR_CG_Prediction.csv")
